@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      lang="#{localeManagerBean.language}">
     <h:head>
         <title>Guess Number</title>
         <h:outputStylesheet library="style" name="guess.css" />
@@ -11,17 +12,17 @@
     <h:body>
         <div id="content">
             <c:choose>
-                <c:when test="#{guessNumberBean.min eq -1}">
+                <c:when test="#{guessNumberBean.step eq 0}">
                     <h:form>
-                        #{msg.minValue}: <h:inputText id="userMin" title="Un nombre entier supérieur à 0" value="#{guessNumberBean.min}" size="2">
+                        #{msg.minValue}: <h:inputText id="userMin" title="#{msg.numberSuperior} 0" value="#{guessNumberBean.min}" size="2">
                             <f:validateLongRange minimum="0" />
                         </h:inputText>
-                        <h:commandButton value="Ok" action="index" />
+                        <h:commandButton value="Ok" action="#{guessNumberBean.nextStep()}" />
                     </h:form>
                 </c:when>
                 <c:otherwise>
                     <h:form>
-                        #{msg.maxValue}:<h:inputText id="userMax" title="Un nombre entier supérieur à #{guessNumberBean.min}" value="#{guessNumberBean.max}" size="2">
+                        #{msg.maxValue}:<h:inputText id="userMax" title="#{msg.numberBetween} #{guessNumberBean.min}" value="#{guessNumberBean.max}" size="2">
                             <f:validateLongRange minimum="#{guessNumberBean.min}" />
                         </h:inputText>
                         <h:commandButton value="Ok" action="#{guessNumberBean.initMinMax()}" />
@@ -29,8 +30,9 @@
                 </c:otherwise>
             </c:choose>
             <h:form>
-                Langue: <h:outputText value="#{guessNumberBean.langue}"/><br />
-                <h:commandButton value="#{msg.switchLanguage}" action="#{guessNumberBean.switchLocale()}" />
+                #{msg.language}: <h:outputText value="#{localeManagerBean.language}"/><br />
+                #{msg.locale}: <h:outputText value="#{localeManagerBean.locale}"/><br />
+                <h:commandButton value="#{msg.switchLanguage}" action="#{localeManagerBean.switchLanguage()}" />
             </h:form>
         </div>
     </h:body>

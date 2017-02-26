@@ -21,12 +21,12 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class GuessNumberBean implements Serializable {
 
-    private Locale locale;
-    private ResourceBundle translator = ResourceBundle.getBundle("bean.message.message");
+    private ResourceBundle msg = ResourceBundle.getBundle("bean.message.message");
 
     private String phrase;
     private int number;
     private int propose;
+    private int step = 0;
     private int min;
     private int max;
     private int essais;
@@ -34,16 +34,17 @@ public class GuessNumberBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        this.locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-        this.min = -1;
-        this.max = -1;
+        this.step = 0;
+        this.min = 0;
+        this.max = 100;
         this.propose = 1;
         this.essais = 0;
         this.maxEssais = 10;
     }
 
     public String initMinMax() {
-        this.phrase = translator.getString("guessPhrase") + " " + this.min + " " + translator.getString("and") + " " + this.max + ".";
+        this.step = 1;
+        this.phrase = msg.getString("guessPhrase") + " " + this.min + " " + msg.getString("andWord") + " " + this.max + ".";
         this.number = (int) this.min + (int) (Math.random() * ((this.max - this.min) + 1));
         return "guess";
     }
@@ -76,6 +77,19 @@ public class GuessNumberBean implements Serializable {
 
     public void setPropose(int propose) {
         this.propose = propose;
+    }
+
+    public int getStep() {
+        return step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
+    }
+
+    public String nextStep() {
+        this.step++;
+        return "index";
     }
 
     public int getMin() {
@@ -114,48 +128,22 @@ public class GuessNumberBean implements Serializable {
         this.maxEssais = maxEssais;
     }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    public String getLangue() {
-        return locale.getLanguage();
-    }
-
     public String renewSession() {
-        this.min = -1;
-        this.max = -1;
+        this.step = 0;
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "index";
-    }
-
-    public String switchLocale() {
-        if (this.getLangue() == "fr") {
-            Locale l = new Locale("en");
-            setLocale(l);
-            FacesContext.getCurrentInstance().getViewRoot().setLocale(l);
-        } else {
-            Locale l = new Locale("fr");
-            setLocale(l);
-            FacesContext.getCurrentInstance().getViewRoot().setLocale(l);
-        }
         return "index";
     }
 
     public String comparer() {
         if (getEssais() == getMaxEssais()) {
-            setPhrase(translator.getString("outOfChances"));
+            setPhrase(msg.getString("outOfChances"));
         } else {
             if (getPropose() == getNumber()) {
-                setPhrase(translator.getString("guessRight"));
+                setPhrase(msg.getString("guessRight"));
             } else if (getPropose() > getNumber()) {
-                setPhrase(translator.getString("guessTooHigh"));
+                setPhrase(msg.getString("guessTooHigh"));
             } else {
-                setPhrase(translator.getString("guessTooLow"));
+                setPhrase(msg.getString("guessTooLow"));
             }
             incrementeEssais();
         }
