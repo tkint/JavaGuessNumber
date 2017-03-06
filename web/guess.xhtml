@@ -45,6 +45,7 @@
                 #{msg.language}: <h:outputText value="#{localeManagerBean.language}"/><br />
                 #{msg.locale}: <h:outputText value="#{localeManagerBean.locale}"/><br />
                 <h:commandButton value="#{msg.switchLanguage}" action="#{localeManagerBean.switchLanguage()}" />
+                <h:commandButton value="#{msg.history}" action="#{guessNumberBean.goToHistory()}"/>
             </h:form>
         </div>
     </h:body>

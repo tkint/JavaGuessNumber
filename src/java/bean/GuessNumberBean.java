@@ -6,7 +6,8 @@
 package bean;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -31,6 +32,7 @@ public class GuessNumberBean implements Serializable {
     private int max;
     private int essais;
     private int maxEssais;
+    private List<Integer> history;
 
     @PostConstruct
     public void init() {
@@ -40,6 +42,7 @@ public class GuessNumberBean implements Serializable {
         this.propose = 1;
         this.essais = 0;
         this.maxEssais = 10;
+        this.history = new ArrayList<Integer>();
     }
 
     public String initMinMax() {
@@ -128,9 +131,19 @@ public class GuessNumberBean implements Serializable {
         this.maxEssais = maxEssais;
     }
 
+    public List<Integer> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<Integer> history) {
+        this.history = history;
+    }
+
     public String renewSession() {
         this.step = 0;
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        this.essais = 0;
+        this.propose = 1;
+//        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index";
     }
 
@@ -140,6 +153,7 @@ public class GuessNumberBean implements Serializable {
         } else {
             if (getPropose() == getNumber()) {
                 setPhrase(msg.getString("guessRight"));
+                this.history.add(essais + 1);
             } else if (getPropose() > getNumber()) {
                 setPhrase(msg.getString("guessTooHigh"));
             } else {
@@ -148,5 +162,9 @@ public class GuessNumberBean implements Serializable {
             incrementeEssais();
         }
         return "guess";
+    }
+    
+    public String goToHistory() {
+        return "history";
     }
 }

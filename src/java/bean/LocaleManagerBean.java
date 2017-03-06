@@ -27,8 +27,7 @@ public class LocaleManagerBean implements Serializable {
         locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
     }
 
-    public LocaleManagerBean(Locale locale) {
-        this.locale = locale;
+    public LocaleManagerBean() {
     }
 
     public Locale getLocale() {
